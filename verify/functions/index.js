@@ -9,8 +9,9 @@ exports.verifyFlowSignatures = functions.https.onRequest(
     const compSignatures = JSON.parse(request.body.compSignatures);
     const signedTimestamp = Number(userMessage);
     const currentTimestamp = new Date().getTime();
-
-    if (currentTimestamp > signedTimestamp + 600000) {
+    const fiveMinPastAfterSigned = currentTimestamp - 300000 > signedTimestamp;
+    const signedToFutureTimestamp = signedTimestamp > currentTimestamp;
+    if (fiveMinPastAfterSigned || signedToFutureTimestamp) {
       response.send({
         result: false,
         message: "signature timeout.",
@@ -23,7 +24,7 @@ exports.verifyFlowSignatures = functions.https.onRequest(
     );
     response.send({
       result: result,
-      addr: compSignatures.addr,
+      addr: compSignatures[0].addr,
       signedTimestamp: signedTimestamp,
       verifiedTimestamp: currentTimestamp,
     });
