@@ -1,0 +1,6 @@
+{
+  "functions": {
+    "predeploy": ["npm install --prefix \"$RESOURCE_DIR\""],
+    "source": "functions"
+  }
+}
